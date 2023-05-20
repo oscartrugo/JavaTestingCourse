@@ -6,7 +6,7 @@ import org.otrujillo.junit5app.ejemplos.exception.DineroInsuficienteException;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+//@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 class CuentaTest {
 
     Cuenta cuenta;
@@ -21,6 +21,16 @@ class CuentaTest {
     @AfterEach
     void tearDown(){
         System.out.println("Finalizando método del programa.");
+    }
+
+    @BeforeAll
+    static void beforeAll(){
+        System.out.println("Inicializando el test.");
+    }
+
+    @AfterAll
+    static void afterAll(){
+        System.out.println("Finalizando el test.");
     }
 
     @Test
