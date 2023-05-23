@@ -1,9 +1,12 @@
 package org.otrujillo.junit5app.ejemplos.models;
 
+import jdk.jfr.Enabled;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.*;
 import org.otrujillo.junit5app.ejemplos.exception.DineroInsuficienteException;
 
 import java.math.BigDecimal;
+import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 //@TestInstance(TestInstance.Lifecycle.PER_METHOD)
@@ -12,24 +15,24 @@ class CuentaTest {
     Cuenta cuenta;
 
     @BeforeEach
-    void initMetodoTest(){
+    void initMetodoTest() {
         this.cuenta = new Cuenta("Oscar", new BigDecimal("1000.12345"));
 
         System.out.println("Iniciando el método.");
     }
 
     @AfterEach
-    void tearDown(){
+    void tearDown() {
         System.out.println("Finalizando método del programa.");
     }
 
     @BeforeAll
-    static void beforeAll(){
+    static void beforeAll() {
         System.out.println("Inicializando el test.");
     }
 
     @AfterAll
-    static void afterAll(){
+    static void afterAll() {
         System.out.println("Finalizando el test.");
     }
 
@@ -109,7 +112,7 @@ class CuentaTest {
 
     @Test
     @DisplayName("Probando relaciones entre las cuentas y el banco con assertAll")
-    //@Disabled
+        //@Disabled
     void testRelacionBancoCuentas() {
         //fail();
         Cuenta cuenta1 = new Cuenta("John Doe", new BigDecimal("2500"));
@@ -147,4 +150,64 @@ class CuentaTest {
 
 
     }
+
+    @Test
+    @EnabledOnOs(OS.WINDOWS)
+    void testSoloWindows() {
+
+    }
+
+    @Test
+    @EnabledOnOs({OS.LINUX, OS.MAC})
+    void testSoloLinuxMac() {
+
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void testNoWindows() {
+    }
+
+    @Test
+    @EnabledOnJre(JRE.JAVA_8)
+    void soloJdk8() {
+    }
+
+    @Test
+    @EnabledOnJre(JRE.JAVA_15)
+    void soloJdk15(){}
+
+    @Test
+    @EnabledOnJre(JRE.JAVA_17)
+    void soloJdk17(){}
+
+    @Test
+    @DisabledOnJre(JRE.JAVA_15)
+    void testNoJdk15(){}
+
+    @Test
+    void imprimirSystemProperties() {
+        Properties properties = System.getProperties();
+        properties.forEach((k, v)-> System.out.println(k + ": " + v));
+    }
+
+    @Test
+    @EnabledIfSystemProperty(named = "java.version", matches = ".*17.*")
+    void testJavaVersion(){}
+
+    @Test
+    @DisabledIfSystemProperty(named = "os.arch", matches = ".*32.*")
+    void testSolo64(){}
+
+    @Test
+    @DisabledIfSystemProperty(named = "os.arch", matches = ".*32.*")
+    void testNo64(){}
+
+    @Test
+    @EnabledIfSystemProperty(named = "user.name", matches = "otrujillo")
+    void testUserName(){}
+
+    @Test
+    @EnabledIfSystemProperty(named = "ENV", matches = "dev")
+    void testDev(){}
 }
