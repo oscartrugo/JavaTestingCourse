@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.*;
+
 //@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 class CuentaTest {
 
@@ -38,9 +40,7 @@ class CuentaTest {
     }
 
     @Test
-    @DisplayName("Probando el saldo de la cuenta corriente, que no sea null, mayor que cero, valor esperado.")
     void testNombreCuenta() {
-
         String esperado = "Oscar";
         String actual = cuenta.getPersona();
         assertNotNull(actual, "La cuenta no puede ser nula");
@@ -49,6 +49,7 @@ class CuentaTest {
     }
 
     @Test
+    @DisplayName("Probando el saldo de la cuenta corriente, que no sea null, mayor que cero, valor esperado.")
     void saldoCuenta() {
         this.cuenta = new Cuenta("Oscar", new BigDecimal("1000.12345"));
         assertNotNull(cuenta.getSaldo());
@@ -233,4 +234,18 @@ class CuentaTest {
     @Test
     @DisabledIfEnvironmentVariable(named = "ENVIRONMENT", matches = "prod")
     void testEnvProdDisabled(){}
+
+    @Test
+    //@DisplayName("Probando el saldo de la cuenta corriente, que no sea null, mayor que cero, valor esperado.")
+    void testSaldoCuentaDev() {
+        boolean esDev = "dev".equals(System.getProperty("ENV"));
+        assumingThat(esDev, ()->{
+            assertNotNull(cuenta.getSaldo());
+            assertEquals(1000.12345, cuenta.getSaldo().doubleValue());
+
+            assertFalse(cuenta.getSaldo().compareTo(BigDecimal.ZERO) < 0); //Asegurar que el saldo sea cero o mayor a cero, nunca negativo
+            assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
+        });
+;
+    }
 }
