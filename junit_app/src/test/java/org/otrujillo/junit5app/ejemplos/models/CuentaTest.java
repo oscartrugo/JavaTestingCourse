@@ -3,6 +3,8 @@ package org.otrujillo.junit5app.ejemplos.models;
 import jdk.jfr.Enabled;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.otrujillo.junit5app.ejemplos.exception.DineroInsuficienteException;
 
 import java.math.BigDecimal;
@@ -251,6 +253,14 @@ class CuentaTest {
         assertNotNull(cuenta.getSaldo());
         assertEquals(900, cuenta.getSaldo().intValue());
         assertEquals("900.12345", cuenta.getSaldo().toPlainString());
+    }
+
+    @ParameterizedTest(name = "Numero {index} ejecutando con valor {0} - {argumentsWithNames}")
+    @ValueSource(doubles = {100, 200, 300, 500, 700, 1000})
+    void testDebitoCuenta(double monto) {
+        cuenta.debito(new BigDecimal(monto));
+        assertNotNull(cuenta.getSaldo());
+        assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
     }
 
 }
